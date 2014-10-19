@@ -1,0 +1,5 @@
+CSAir2.1
+flask==0.10
+Jinja2==2.7
+jsonpickle==0.8
+Werkzeug==0.9

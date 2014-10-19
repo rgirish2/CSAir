@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Rishi Girish (rgirish2ATillinoisDOTedu)">
+		<title>Welcome to CSAir</title>
+
+		<!-- Bootstrap -->
+    	<link href="../static/css/bootstrap.min.css" rel="stylesheet" />
+    	<!-- Custom styles for this template -->
+    	<link href="../static/css/cover.css" rel="stylesheet" />
+        <!-- Custom style for the data tables -->
+        <link href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.css" rel="stylesheet" />
+	</head>
+
+    <body>
+
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#" style="color: #ffffff">CSAir The new way to fly</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                    <form class="navbar-form navbar-right">
+                        <input type="text" class="form-control" placeholder="Search...">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-sm-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li class="active" id="showCityViewList"><a href="#" id="showCityView">City View</a></li>
+                        <li id="showRouteViewList"><a href="#" id="showRouteView">Route View</a></li>
+                        <li id="showAnalyticsViewList"><a href="#" id="showAnalyticsView">Analytics</a></li>
+                        <li id="showExportViewList"><a href="#" id="showExportView">Export</a></li>
+                        <li id="showAddMoreDataViewList"><a href="#" id="showAddMoreDataView">Add More Data</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+                    <div class="col-md-6" id="cityInfoForm" style="padding-bottom: 25px">
+                        <div class="form-group">
+                            <select id="cityQueryField" class="form-control" >
+                                {% for city in cities %}
+                                    <option value="{{city}}">{{city}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="queryCity" class="btn btn-primary btn-sm" onclick="getCityInfo()">Get City Info</button>
+                        </div>
+
+                        <div class="form-group-lg">
+                            <button type="button" id="addCity" class="btn btn-default btn-md" onclick="addCityView()">Add City</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6" id="cityInfoData" style="padding-bottom: 25px">
+                        <ui class="list-group">
+                            <li class="list-group-item" id="codeline">Code:</li>
+                            <li class="list-group-item" id="nameline">Name:</li>
+                            <li class="list-group-item" id="countryline">Country:</li>
+                            <li class="list-group-item" id="continentline">Continent:</li>
+                            <li class="list-group-item" id="timezoneline">TimeZone:</li>
+                            <li class="list-group-item" id="coordinatesline">Coordinates:</li>
+                            <li class="list-group-item" id="populationline">Population:</li>
+                            <li class="list-group-item" id="regionline">Region:</li>
+                            <li class="list-group-item" id="connectionsline">Connections:</li>
+                        </ui>
+                    </div>
+
+                    <div class="table-responsive" id="cityTableDiv" style="padding-top: 25px">
+                    </div>
+
+                    <div class="col-md-6" style="display: none; padding-bottom: 25px" id="routeMapForm">
+                        <div class="form-group">
+                            <input id="flightMap" placeholder="Enter routes to visualize" class="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="viewFlightMap" onclick="getFlightMapURL()" class="btn btn-primary btn-sm">Get Map URL</button>
+                        </div>
+
+                        <div class="form-group-lg">
+                            <button type="button" id="addRouteViewButton" onclick="addRouteView()" class="btn btn-default btn-md">Add Route</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6" style="display: none; padding-bottom: 25px" id="routeMapURL">
+                        <ui class="list-group">
+                            <li class="list-group-item" id="putFlightMapURL0">URL #0</li>
+                            <li class="list-group-item" id="putFlightMapURL1">URL #1</li>
+                            <li class="list-group-item" id="putFlightMapURL2">URL #2</li>
+                            <li class="list-group-item" id="putFlightMapURL3">URL #3</li>
+                            <li class="list-group-item" id="putFlightMapURL4">URL #4</li>
+                            <li class="list-group-item" id="putFlightMapURL5">URL #5</li>
+                            <li class="list-group-item" id="putFlightMapURL6">URL #6</li>
+                            <li class="list-group-item" id="putFlightMapURL7">URL #7</li>
+                            <li class="list-group-item" id="putFlightMapURL8">URL #8</li>
+                        </ui>
+                    </div>
+
+                    <div class="table-responsive" id="routeTableDiv" style="display: none">
+                        <table id="routeTable" class="display table" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Origin</th>
+                                    <th>Destination</th>
+                                    <th>Distance</th>
+                                    <th>Route URL</th>
+                                    <th>View Route Details</th>
+                                    <th>Edit Route</th>
+                                </tr>
+                            </thead>
+
+                            <tfoot>
+                                <tr>
+                                    <th>Origin</th>
+                                    <th>Destination</th>
+                                    <th>Distance</th>
+                                    <th>Route URL</th>
+                                    <th>View Route Details</th>
+                                    <th>Edit Route</th>
+                                </tr>
+                            </tfoot>
+
+                            <tbody id="routeTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="downloadFileDiv" style="display: none">
+                        <form class="form-horizontal" action="/download" method="get">
+                            <input type="submit" value="Download Current Data" class="btn btn-md btn-info"/>
+                        </form>
+                    </div>
+
+                    <div id="analyticsDiv" style="display: none">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title" style="font-weight: bold">CSAIR Metrics</h3>
+                            </div>
+                        </div>
+
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-success">Longest Single Flight: </a>
+                            <a href="#" class="list-group-item list-group-item-info">Shortest Single Flight: </a>
+                            <a class="list-group-item list-group-item-warning">Average Distance of all Flights: </a>
+                            <a href="#" class="list-group-item list-group-item-danger">Biggest City by Population: </a>
+                            <a href="#" class="list-group-item list-group-item-warning">Smallest City by Population: </a>
+                            <a class="list-group-item list-group-item-info">Average City Size(Population): </a>
+                            <a href="#" class="list-group-item list-group-item-success">Continents Served: </a>
+                            <a href="#" class="list-group-item list-group-item-danger">Hub Cities: </a>
+                        </div>
+
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title" style="font-weight: bold">Find Shortest Route: </h3>
+                            </div>
+                        </div>
+
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="shortestRouteOriginCityCode" class="col-sm-2 control-label">Origin Code: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="shortestRouteOriginCityCode" placeholder="Ex. NYC">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="shortestRouteDestinationCityCode" class="col-sm-2 control-label">Destination Code: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="shortestRouteDestinationCityCode" placeholder="Ex. LAX">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" id="findShortestRouteButton" onclick="findShortestRoute()" class="btn btn-info btn-md">Find Shortest Route</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add City Modal -->
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addCityModal" aria-hidden="true" id="addCityModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="addCityModalTitle">Add City</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="addCityCode" class="col-sm-2 control-label">Code: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="addCityCode" placeholder="Ex. NYC">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityName" class="col-sm-2 control-label">Name: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="addCityName" placeholder="Ex. New York City">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityCountry" class="col-sm-2 control-label">Country: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="addCityCountry" placeholder="Ex. USA">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityTimeZone" class="col-sm-2 control-label">Time Zone: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="addCityTimeZone" placeholder="Ex. -5">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityContinent" class="col-sm-2 control-label">Continent: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="addCityContinent" placeholder="Ex. North America">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityCoordinates" class="col-sm-2 control-label">Coordinates: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="addCityCoordinates" placeholder="Ex. {'S' : 50, 'E': 76}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityPopulation" class="col-sm-2 control-label">Population: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="addCityPopulation" placeholder="Ex. 500000">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityRegion" class="col-sm-2 control-label">Region: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="addCityRegion" placeholder="Ex. 3">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="addCity()">Add City</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit City Modal -->
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="editCityModal" aria-hidden="true" id="editCityModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="editCityModalTitle">Edit City</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="addCityCode" class="col-sm-2 control-label">Code: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control form-control-static" id="editCityCode" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityName" class="col-sm-2 control-label">Name: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control form-control-static" id="editCityName" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityCountry" class="col-sm-2 control-label">Country: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="editCityCountry">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityTimeZone" class="col-sm-2 control-label">Time Zone: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="editCityTimeZone">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityContinent" class="col-sm-2 control-label">Continent: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="editCityContinent">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityCoordinates" class="col-sm-2 control-label">Coordinates: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="editCityCoordinates">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityPopulation" class="col-sm-2 control-label">Population: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="editCityPopulation">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityRegion" class="col-sm-2 control-label">Region: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="editCityRegion">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" id="editCityDeleteButton">Delete City</button>
+                        <button type="button" class="btn btn-primary" onclick="editCity()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Route Modal -->
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addRouteModal" aria-hidden="true" id="addRouteModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="addRouteModalTitle">Add Route</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="addCityCode" class="col-sm-2 control-label">Origin Code: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="addRouteOriginCode" placeholder="Ex. NYC">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityCode" class="col-sm-2 control-label">Destination Code: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="addRouteDestinationCode" placeholder="Ex. CHI">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityCode" class="col-sm-2 control-label">Distance: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="addRouteDistance" placeholder="Ex. 4565">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addCityCode" class="col-sm-2 control-label">Direction: </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="addRouteDirection">
+                                        <option value="1">Uni-Directional</option>
+                                        <option value="2">Bi-Directional</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="addRoute()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Route Modal -->
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="editRouteModal" aria-hidden="true" id="editRouteModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="editRouteModalTitle">Edit Route</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="editRouteOrigin" class="col-sm-2 control-label">Origin: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control form-control-static" id="editRouteOrigin" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editRouteDestination" class="col-sm-2 control-label">Destination: </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control form-control-static" id="editRouteDestination" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editRouteDistance" class="col-sm-2 control-label">Distance: </label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="editRouteDistance">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteRoute()">Delete Route</button>
+                        <button type="button" class="btn btn-primary" onclick="editRoute()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route Map Modal -->
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="routeMapModal" aria-hidden="true" id="routeMapModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="routeMapModalTitle"></h4>
+                    </div>
+
+                    <div class="modal-body" id="modalMapDiv">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" id="requestPlainViewMap">Plain View</button>
+                        <button type="button" class="btn btn-info" id="requestLightViewMap">Light View</button>
+                        <button type="button" class="btn btn-primary" id="requestBlueMarbleMap">Blue Marble View</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route Details Modal -->
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="routeDetailsModal" aria-hidden="true" id="routeDetailsModal">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="routeDetailsModalTitle"></h4>
+                </div>
+
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-success" id="routeDetailsModalCost"></li>
+                        <li class="list-group-item list-group-item-info" id="routeDetailsModalTime"></li>
+                    </ul>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <script src="../static/js/jquery1.11.1.min.js"></script>
+        <script src="../static/js/jquery.dataTables.min.js"></script>
+        <script src="../static/js/bootstrap.min.js"></script>
+        <script src="../static/js/docs.min.js"></script>
+        <script src="../static/js/main.js"></script>
+    </body>
+</html>

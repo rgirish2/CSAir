@@ -1,0 +1,34 @@
+##############################################################################################
+#                               Welcome to my CS AIR web application.                        #
+#                       The new way to fly and find information about flights.               #
+#                                                                                            #
+#                                   author: Rishi Girish (@rgirish2)                         #
+##############################################################################################
+
+To run this application, please install the following python(2.6.6) packages:
+
+-> Flask
+-> json
+-> Jinja2
+-> jsonpickle
+-> Werkzeug
+
+I would recommend using 'pip' to find all these packages.
+
+To run this application  on you local machine:
+
+-> Checkout this repository.
+-> Install/check you have all the above packages.
+-> Run command from the root of this repository - 'python main.py'
+-> Open a browser and go to: 'localhost:5000'
+
+Enjoy and have fun.
+
+TODO:
+-> Add analytics and export section.
+-> Allow users to upload the file and create all information from the user files.
+-> Sanitize user inputs.
+-> Catch exceptions thrown during the program.
+-> Add metrics sections to the view. 
+-> Move towards using Angular/Backbone/Ember to follow MVC framwork for the UI.
+-> Move to github and host from my webpage.
