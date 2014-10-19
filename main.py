@@ -9,7 +9,7 @@ import json
 UPLOAD_FOLDER = '../uploadedFiles/'
 MAX_CONTENT_LENGTH = 1024 * 1024 * 5
 ALLOWED_EXTENSIONS = set(['json'])
-FILENAME = '/Users/Neo/PyChram_workspace/CSAir2.2/map_data.json'
+FILENAME = '../map_data.json'
 
 app = Flask(__name__)
 #app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
