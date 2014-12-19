@@ -1,9 +1,9 @@
-##############################################################################################
-#                               Welcome to my CS AIR web application.                        #
-#                       The new way to fly and find information about flights.               #
-#                                                                                            #
-#                                   author: Rishi Girish (@rgirish2)                         #
-##############################################################################################
+###############################################################################
+#                Welcome to my CS AIR web application.                        #
+#        The new way to fly and find information about flights.               #
+#                                                                             #
+#                    author: Rishi Girish (@rgirish2)                         #
+################################################################################
 
 To run this application, please install the following python(2.6.6) packages:
 
